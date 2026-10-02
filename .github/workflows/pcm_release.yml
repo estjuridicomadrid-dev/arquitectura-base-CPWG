@@ -4,12 +4,19 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Versión del release (ej. v1.3.0)"
+        required: true
+        default: "v1.3.0"
 
 permissions:
   contents: write
 
 jobs:
   test-and-release:
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
@@ -27,7 +34,7 @@ jobs:
 
       - name: Validate PCM metadata
         env:
-          RELEASE_VERSION: ${{ github.ref_name }}
+          RELEASE_VERSION: ${{ github.event.inputs.tag_name || github.ref_name }}
         run: |
           python - <<'PY'
           import json
@@ -47,14 +54,15 @@ jobs:
               raise SystemExit("metadata.json must use the official KiCad PCM v1 schema")
           if metadata["type"] != "plugin" or not metadata["versions"]:
               raise SystemExit("metadata.json must describe a plugin with at least one version")
-          version = os.environ["RELEASE_VERSION"].removeprefix("v")
+          release_tag = os.environ["RELEASE_VERSION"]
+          if not re.fullmatch(r"v\d{1,4}(?:\.\d{1,4}(?:\.\d{1,6})?)?", release_tag):
+              raise SystemExit(f"release tag {release_tag!r} is not a PCM numeric version")
+          version = release_tag[1:]
           if metadata["versions"][0]["version"] != version:
               raise SystemExit(
                   f"tag version {version} does not match metadata.json version "
                   f"{metadata['versions'][0]['version']}"
               )
-          if not re.fullmatch(r"\d{1,4}(?:\.\d{1,4}(?:\.\d{1,6})?)?", version):
-              raise SystemExit(f"tag version {version!r} is not a PCM numeric version")
           print(f"Validated metadata.json for version {version}")
           PY
 
@@ -73,7 +81,7 @@ jobs:
 
       - name: Add release download details to metadata
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ github.event.inputs.tag_name || github.ref_name }}
         run: |
           python - <<'PY'
           import hashlib
@@ -123,7 +131,8 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
+          target_commitish: main
           generate_release_notes: true
           files: |
             arquitectura_base_cpwg_pcm.zip
