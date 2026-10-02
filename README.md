@@ -12,7 +12,7 @@ publicable con KiCad Plugin and Content Manager (PCM).
 - `generate_icons.py`: genera `resources/icon.svg`, incluido en el paquete.
 - `metadata.json`: metadatos PCM del paquete, versión inicial `1.3.0`.
 - `.github/workflows/pcm_release.yml`: pruebas y publicación automática al enviar
-  una etiqueta `v*`.
+  una etiqueta `v*`, o ejecución manual desde Actions.
 
 La acción aparece en el menú de herramientas del editor PCB de KiCad. La estimación
 usa una aproximación CPW de plano de masa infinito y la permitividad
@@ -39,10 +39,11 @@ ancho y separación se expresan en milímetros.
 
 ## Publicar un release PCM
 
-El workflow `.github/workflows/pcm_release.yml` se ejecuta con etiquetas `v*`.
-La versión de la etiqueta (sin la `v`) debe coincidir con `versions[0].version`
-en `metadata.json`. Para publicar la versión `1.3.0`, después de integrar los
-archivos en la rama principal:
+El workflow `.github/workflows/pcm_release.yml` se ejecuta con etiquetas `v*`
+o manualmente desde Actions en la rama `main`, indicando `tag_name` (por defecto,
+`v1.3.0`). La versión de la etiqueta (sin la `v`) debe coincidir con
+`versions[0].version` en `metadata.json`. Para publicar la versión `1.3.0`
+mediante una etiqueta, después de integrar los archivos en la rama principal:
 
 ```bash
 git tag v1.3.0
