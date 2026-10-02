@@ -22,7 +22,7 @@ jobs:
 
       - name: Run minimal tests
         run: |
-          python -m compileall -q rf_discontinuity_analyzer.py generate_icons.py
+          python -m compileall -q architecture_base_cpwg.py rf_discontinuity_analyzer.py generate_icons.py
           python -m unittest discover -s tests -v
 
       - name: Validate PCM metadata
@@ -64,7 +64,7 @@ jobs:
       - name: Package PCM plugin
         run: |
           mkdir -p package/resources
-          cp rf_discontinuity_analyzer.py README.md package/
+          cp architecture_base_cpwg.py rf_discontinuity_analyzer.py README.md package/
           cp resources/icon.svg package/resources/
           (
             cd package

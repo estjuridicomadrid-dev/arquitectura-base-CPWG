@@ -7,12 +7,15 @@ publicable con KiCad Plugin and Content Manager (PCM).
 
 - `rf_discontinuity_analyzer.py`: estimación cuasiestática de la impedancia de una
   CPWG y de la reflexión en una transición entre dos geometrías.
+- `architecture_base_cpwg.py`: acción del editor PCB de KiCad para introducir las
+  dos geometrías y mostrar los resultados del analizador.
 - `generate_icons.py`: genera `resources/icon.svg`, incluido en el paquete.
 - `metadata.json`: metadatos PCM del paquete, versión inicial `1.3.0`.
 - `.github/workflows/pcm_release.yml`: pruebas y publicación automática al enviar
   una etiqueta `v*`.
 
-La estimación usa una aproximación CPW de plano de masa infinito y la permitividad
+La acción aparece en el menú de herramientas del editor PCB de KiCad. La estimación
+usa una aproximación CPW de plano de masa infinito y la permitividad
 efectiva `(εr + 1) / 2`; no sustituye una simulación electromagnética de onda
 completa ni las comprobaciones DRC de KiCad.
 
