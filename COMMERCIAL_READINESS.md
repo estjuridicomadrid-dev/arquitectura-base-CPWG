@@ -7,7 +7,8 @@ con clientes o revisiones jurídicas.
 ## 1. Paquete PCM
 
 El workflow genera el archivo con `metadata.json` en la raíz, los módulos del
-plugin bajo `plugins/`, la licencia y los recursos bajo `resources/`. La
+plugin bajo `plugins/`, la licencia y `resources/icon.png` en formato PNG de
+64×64. La
 validación automática comprueba los archivos requeridos y algunos campos del
 manifiesto; la aceptación final debe comprobarse instalando el ZIP desde PCM en
 una instalación real de KiCad.

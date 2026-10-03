@@ -3,6 +3,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
+from generate_icons import generate_icon
 from package_pcm import build_package, validate_package
 
 
@@ -22,8 +23,18 @@ class PackageTests(unittest.TestCase):
             self.assertIn("metadata.json", names)
             self.assertIn("plugins/architecture_base_cpwg.py", names)
             self.assertIn("plugins/rf_discontinuity_analyzer.py", names)
-            self.assertIn("resources/icon.svg", names)
+            self.assertIn("resources/icon.png", names)
+            self.assertNotIn("resources/icon.svg", names)
             self.assertNotIn("architecture_base_cpwg.py", names)
+
+    def test_generated_png_has_pcm_icon_dimensions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            icon_path = generate_icon(Path(directory)).with_suffix(".png")
+            image = icon_path.read_bytes()
+
+            self.assertTrue(image.startswith(b"\x89PNG\r\n\x1a\n"))
+            self.assertEqual(int.from_bytes(image[16:20], "big"), 64)
+            self.assertEqual(int.from_bytes(image[20:24], "big"), 64)
 
     def test_rejects_archive_missing_pcm_manifest(self):
         with tempfile.TemporaryDirectory() as directory:

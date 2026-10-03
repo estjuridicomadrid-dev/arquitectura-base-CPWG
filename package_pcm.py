@@ -30,9 +30,18 @@ def validate_package(archive_path: Path) -> None:
             if path.is_absolute() or ".." in path.parts:
                 raise ValueError(f"unsafe package path: {name}")
 
-        missing = set(PACKAGE_FILES) - set(names)
+        required_files = set(PACKAGE_FILES) | {"resources/icon.png"}
+        missing = required_files - set(names)
         if missing:
             raise ValueError(f"package archive is missing files: {sorted(missing)}")
+        png = archive.read("resources/icon.png")
+        if (
+            not png.startswith(b"\x89PNG\r\n\x1a\n")
+            or len(png) < 24
+            or int.from_bytes(png[16:20], "big") != 64
+            or int.from_bytes(png[20:24], "big") != 64
+        ):
+            raise ValueError("package icon must be a 64x64 PNG")
 
         metadata = json.loads(archive.read("metadata.json"))
         required = {
@@ -68,7 +77,7 @@ def build_package(project_root: Path, archive_path: Path) -> Path:
                 if not source.is_file():
                     raise FileNotFoundError(f"required package file not found: {source}")
                 archive.write(source, package_file)
-            archive.write(icon_path, "resources/icon.svg")
+            archive.write(icon_path.with_suffix(".png"), "resources/icon.png")
         validate_package(archive_path)
     return archive_path
 

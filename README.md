@@ -9,7 +9,7 @@ publicable con KiCad Plugin and Content Manager (PCM).
   CPWG y de la reflexión en una transición entre dos geometrías.
 - `architecture_base_cpwg.py`: acción del editor PCB de KiCad para introducir las
   dos geometrías y mostrar los resultados del analizador.
-- `generate_icons.py`: genera `resources/icon.svg`.
+- `generate_icons.py`: genera `resources/icon.svg` y `resources/icon.png` de 64×64.
 - `package_pcm.py`: genera el icono del paquete, construye y comprueba la
   estructura del archivo PCM.
 - `metadata.json`: metadatos PCM del paquete, versión inicial `1.3.0`.
@@ -68,7 +68,7 @@ git push origin v1.3.0
 
 El workflow ejecuta las pruebas, valida `metadata.json` y crea
 `arquitectura_base_cpwg_pcm.zip` con el manifiesto en la raíz, los módulos bajo
-`plugins/` y el recurso gráfico bajo `resources/`. El release de GitHub incluye ese ZIP y el
+`plugins/` y `resources/icon.png` de 64×64. El release de GitHub incluye ese ZIP y el
 `metadata.json` actualizado con la URL, el SHA-256 y el tamaño del paquete. Para
 publicar, GitHub Actions requiere permiso de escritura de contenidos en la
 configuración del repositorio.
