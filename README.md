@@ -9,7 +9,9 @@ publicable con KiCad Plugin and Content Manager (PCM).
   CPWG y de la reflexión en una transición entre dos geometrías.
 - `architecture_base_cpwg.py`: acción del editor PCB de KiCad para introducir las
   dos geometrías y mostrar los resultados del analizador.
-- `generate_icons.py`: genera `resources/icon.svg`, incluido en el paquete.
+- `generate_icons.py`: genera `resources/icon.svg`.
+- `package_pcm.py`: genera el icono del paquete, construye y comprueba la
+  estructura del archivo PCM.
 - `metadata.json`: metadatos PCM del paquete, versión inicial `1.3.0`.
 - `.github/workflows/pcm_release.yml`: pruebas y publicación automática al enviar
   una etiqueta `v*`, o ejecución manual desde Actions.
@@ -18,6 +20,20 @@ La acción aparece en el menú de herramientas del editor PCB de KiCad. La estim
 usa una aproximación CPW de plano de masa infinito y la permitividad
 efectiva `(εr + 1) / 2`; no sustituye una simulación electromagnética de onda
 completa ni las comprobaciones DRC de KiCad.
+
+## Alcance y preparación comercial
+
+La versión actual es un estimador exploratorio de una transición entre dos
+geometrías CPWG introducidas manualmente. No modifica placas, no enruta ni coloca
+vías automáticamente y no ejecuta DRC. No debe utilizarse como única base para
+fabricar un diseño RF.
+
+El estado de la validación electromagnética, la compatibilidad real con KiCad,
+la validación de mercado y las consideraciones de comercialización se documentan
+en [`COMMERCIAL_READINESS.md`](COMMERCIAL_READINESS.md). Esos puntos incluyen
+pruebas pendientes que requieren simuladores, instalaciones de KiCad, usuarios
+potenciales y asesoramiento legal; no se consideran demostrados por las pruebas
+unitarias o por una publicación exitosa.
 
 ## Pruebas y uso local
 
@@ -50,8 +66,9 @@ git tag v1.3.0
 git push origin v1.3.0
 ```
 
-El workflow ejecuta las pruebas, valida `metadata.json`, genera el icono y crea
-`arquitectura_base_cpwg_pcm.zip`. El release de GitHub incluye ese ZIP y el
+El workflow ejecuta las pruebas, valida `metadata.json` y crea
+`arquitectura_base_cpwg_pcm.zip` con el manifiesto en la raíz, los módulos bajo
+`plugins/` y el recurso gráfico bajo `resources/`. El release de GitHub incluye ese ZIP y el
 `metadata.json` actualizado con la URL, el SHA-256 y el tamaño del paquete. Para
 publicar, GitHub Actions requiere permiso de escritura de contenidos en la
 configuración del repositorio.

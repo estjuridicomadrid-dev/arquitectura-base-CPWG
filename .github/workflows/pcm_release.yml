@@ -29,7 +29,7 @@ jobs:
 
       - name: Run minimal tests
         run: |
-          python -m compileall -q architecture_base_cpwg.py rf_discontinuity_analyzer.py generate_icons.py
+          python -m compileall -q architecture_base_cpwg.py rf_discontinuity_analyzer.py generate_icons.py package_pcm.py
           python -m unittest discover -s tests -v
 
       - name: Validate PCM metadata
@@ -66,18 +66,8 @@ jobs:
           print(f"Validated metadata.json for version {version}")
           PY
 
-      - name: Generate package icon
-        run: python generate_icons.py --output-dir resources
-
-      - name: Package PCM plugin
-        run: |
-          mkdir -p package/resources
-          cp architecture_base_cpwg.py rf_discontinuity_analyzer.py README.md package/
-          cp resources/icon.svg package/resources/
-          (
-            cd package
-            zip -qr ../arquitectura_base_cpwg_pcm.zip .
-          )
+      - name: Package and validate PCM plugin
+        run: python package_pcm.py --output arquitectura_base_cpwg_pcm.zip
 
       - name: Add release download details to metadata
         env:
