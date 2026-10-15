@@ -1,10 +1,64 @@
 # arquitectura-base-CPWG
 
-KiCad CPWG Auto-Stitcher, Closed-Loop DRC & Capacitive Tapering Engine.
+Base de análisis de discontinuidades para diseños CPWG en KiCad y paquete
+publicable con KiCad Plugin and Content Manager (PCM).
 
-## Configuración del repositorio y CI/CD
+## Contenido
 
-### 1. Vinculación del entorno local
+- `rf_discontinuity_analyzer.py`: estimación cuasiestática de la impedancia de una
+  CPWG y de la reflexión en una transición entre dos geometrías.
+- `architecture_base_cpwg.py`: acción del editor PCB de KiCad para introducir las
+  dos geometrías y mostrar los resultados del analizador.
+- `generate_icons.py`: genera `resources/icon.svg`, incluido en el paquete.
+- `metadata.json`: metadatos PCM del paquete, versión inicial `1.3.0`.
+- `.github/workflows/pcm_release.yml`: pruebas y publicación automática al enviar
+  una etiqueta `v*`, o ejecución manual desde Actions.
+
+La acción aparece en el menú de herramientas del editor PCB de KiCad. La estimación
+usa una aproximación CPW de plano de masa infinito y la permitividad
+efectiva `(εr + 1) / 2`; no sustituye una simulación electromagnética de onda
+completa ni las comprobaciones DRC de KiCad.
+
+## Pruebas y uso local
+
+Requiere Python 3.10 o posterior; las pruebas y el analizador solo usan la
+biblioteca estándar.
+
+```bash
+python -m unittest discover -s tests -v
+python rf_discontinuity_analyzer.py \
+  --width-before 0.30 --gap-before 0.20 \
+  --width-after 0.25 --gap-after 0.20 \
+  --epsilon-r 4.2
+python generate_icons.py
+```
+
+El analizador imprime en JSON las impedancias antes y después de la transición,
+el coeficiente de reflexión, la pérdida de retorno y la ROE. Las dimensiones de
+ancho y separación se expresan en milímetros.
+
+## Publicar un release PCM
+
+El workflow `.github/workflows/pcm_release.yml` se ejecuta con etiquetas `v*`
+o manualmente desde Actions en la rama `main`, indicando `tag_name` (por defecto,
+`v1.3.0`). La versión de la etiqueta (sin la `v`) debe coincidir con
+`versions[0].version` en `metadata.json`. Para publicar la versión `1.3.0`
+mediante una etiqueta, después de integrar los archivos en la rama principal:
+
+```bash
+git tag v1.3.0
+git push origin v1.3.0
+```
+
+El workflow ejecuta las pruebas, valida `metadata.json`, genera el icono y crea
+`arquitectura_base_cpwg_pcm.zip`. El release de GitHub incluye ese ZIP y el
+`metadata.json` actualizado con la URL, el SHA-256 y el tamaño del paquete. Para
+publicar, GitHub Actions requiere permiso de escritura de contenidos en la
+configuración del repositorio.
+
+## Configuración del repositorio y permisos de CI/CD
+
+Para vincular un entorno local con el repositorio remoto:
 
 ```bash
 git branch -M main
@@ -13,28 +67,7 @@ git remote add origin https://github.com/estjuridicomadrid-dev/arquitectura-base
 git push -u origin main
 ```
 
-El archivo `.gitignore` excluye `__pycache__/`, bytecode de Python, archivos `*.zip`
-(p. ej. `rf_via_stitcher_package.zip`, generado por el pipeline), `.DS_Store` y `.vscode/`.
-
-### 2. Permisos de GitHub Actions
-
-Para que el workflow `.github/workflows/pcm_release.yml` pueda publicar releases con `GITHUB_TOKEN`:
-
-1. **Settings → Actions → General → Workflow permissions**.
-2. Seleccionar **Read and write permissions**.
-3. (Opcional, recomendado) Marcar **Allow GitHub Actions to create and approve pull requests**.
-4. Pulsar **Save**.
-
-### 3. Primer release automático
-
-Crear el tag semántico correspondiente a la versión de `metadata.json`:
-
-```bash
-git tag v1.3.0
-git push origin v1.3.0
-```
-
-En la pestaña **Actions** se ejecutarán los jobs `test-and-validate` (flake8 y
-`rf_discontinuity_analyzer.py`) y `build-and-release` (`generate_icons.py`, empaquetado ZIP,
-SHA-256 e inyección en `metadata.json`). El release quedará publicado en **Releases** con
-`rf_via_stitcher_package.zip` y `metadata.json`.
+Para que el workflow pueda publicar releases con `GITHUB_TOKEN`, en GitHub ve a
+**Settings → Actions → General → Workflow permissions**, selecciona
+**Read and write permissions** (opcionalmente marca **Allow GitHub Actions to
+create and approve pull requests**) y pulsa **Save**.

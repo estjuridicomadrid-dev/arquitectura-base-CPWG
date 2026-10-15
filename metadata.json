@@ -1,0 +1,36 @@
+{
+  "$schema": "https://go.kicad.org/pcm/schemas/v1",
+  "name": "Arquitectura Base CPWG",
+  "description": "Análisis de discontinuidades para geometrías CPWG.",
+  "description_full": "Herramienta base para estimar la impedancia cuasiestática de una guía coplanar con plano de masa y la reflexión en una transición de geometría. Las estimaciones no sustituyen la simulación electromagnética de onda completa.",
+  "identifier": "org.estjuridicomadrid-dev.arquitectura-base-cpwg",
+  "type": "plugin",
+  "author": {
+    "name": "estjuridicomadrid-dev",
+    "contact": {
+      "github": "https://github.com/estjuridicomadrid-dev"
+    }
+  },
+  "maintainer": {
+    "name": "estjuridicomadrid-dev",
+    "contact": {
+      "github": "https://github.com/estjuridicomadrid-dev"
+    }
+  },
+  "license": "GPL-3.0",
+  "resources": {
+    "homepage": "https://github.com/estjuridicomadrid-dev/arquitectura-base-CPWG"
+  },
+  "tags": [
+    "cpwg",
+    "kicad-plugin",
+    "rf"
+  ],
+  "versions": [
+    {
+      "version": "1.3.0",
+      "status": "stable",
+      "kicad_version": "8.0"
+    }
+  ]
+}
