@@ -55,3 +55,19 @@ El workflow ejecuta las pruebas, valida `metadata.json`, genera el icono y crea
 `metadata.json` actualizado con la URL, el SHA-256 y el tamaño del paquete. Para
 publicar, GitHub Actions requiere permiso de escritura de contenidos en la
 configuración del repositorio.
+
+## Configuración del repositorio y permisos de CI/CD
+
+Para vincular un entorno local con el repositorio remoto:
+
+```bash
+git branch -M main
+git remote add origin https://github.com/estjuridicomadrid-dev/arquitectura-base-CPWG.git
+# o por SSH: git@github.com:estjuridicomadrid-dev/arquitectura-base-CPWG.git
+git push -u origin main
+```
+
+Para que el workflow pueda publicar releases con `GITHUB_TOKEN`, en GitHub ve a
+**Settings → Actions → General → Workflow permissions**, selecciona
+**Read and write permissions** (opcionalmente marca **Allow GitHub Actions to
+create and approve pull requests**) y pulsa **Save**.
